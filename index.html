@@ -109,11 +109,13 @@
                             }).then(function(json) {
                               try {
                                 var spriteImage = json.sprites.front_default;
-                                document.getElementById("navBarIcon").src = spriteImage
                                 var text5 = "A form of " + pokemonName + " is " + json.name + ". The sprite at the top of the page should currently reflect this type of " + pokemonName + ".";
                                 arrayOfText.push(text5);
 
                                 var randomIndexOfTextArray = Math.floor(Math.random() * arrayOfText.length);
+                                if(arrayOfText[randomIndexOfTextArray] === text5) {
+                                  document.getElementById("navBarIcon").src = spriteImage
+                                }
 
                                 document.getElementById("pikaInfo").style.visibility = "visible";
                                 document.getElementById("pikaInfo").innerText = "Times Pressed: " +  numTimesPressed + "\n " + arrayOfText[randomIndexOfTextArray];
