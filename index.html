@@ -1,0 +1,150 @@
+<DOCTYPE! html>
+<HTML lang ="en">
+   <HEAD>
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+     <link rel='stylesheet' href='styles.css'/>
+     <meta name='viewport'
+       content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
+	<TITLE>POKE API</TITLE>
+   </HEAD>
+
+   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <img class="navbar-brand" id="navBarIcon" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"/>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+   <span class="navbar-toggler-icon"></span>
+   </button>
+   <div class="collapse navbar-collapse" id="navbarNav">
+   <ul class="navbar-nav">
+     <li class="nav-item active">
+       <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+     </li>
+     <li class="nav-item">
+       <a class="nav-link" href="battle.html">Battle </a>
+     </li>
+   </ul>
+   </div>
+   </nav>
+
+   <BODY>
+     <h1 id="header">Welcome to my Poke API Website</h1>
+      <p id="pikaInfo"><p>
+
+
+     <div class="pikachuHomeDiv">
+       <img id="pikachuHomePic" src="https://raw.githubusercontent.com/ALarsonPi/CS260/main/image.png"/>
+     </div>
+     <div class="buttonBelowPikaDiv">
+       <img id="buttonHomePage" src="https://raw.githubusercontent.com/ALarsonPi/CS260/main/oie_uuDmQFwKcLPr%20(2).png"/>
+     </div>
+
+     <script>
+        var numTimesPressed = 0;
+        document.getElementById('buttonHomePage').addEventListener('click', function (e) {
+          numTimesPressed++;
+          const url = "https://pokeapi.co/api/v2/pokemon/pikachu";
+
+          fetch(url, {mode:'cors'})
+            .then(function(response) {
+              if(response.ok)
+                return response.json();
+              else {
+                return;
+              }
+            }).then(function(json) {
+              try {
+                  var arrayOfText = [];
+
+                  var pokemonName = json.name;
+                  var text1 = "As you well know this pokemon's name is " + pokemonName + ".";
+                  arrayOfText.push(text1);
+
+                  //I was just adding one move to list
+                  /*var randomMove = json.moves;
+                  var moveNum = randomMove.length;
+                  moveNum = Math.floor(Math.random() * moveNum);
+                  randomMove = randomMove[moveNum].move.name;
+                  var text2 = "One of Pikachu's moves is " + randomMove + ".";
+                  arrayOfText.push(text2);*/
+
+                  //Now I'm adding 15 the pokemon's move to the list
+                  pokemonMoves = json.moves;
+                  var moveNum = pokemonMoves.length;
+                  for(var i = 0; i < 15; i++) {
+                    arrayOfText.push("One of Pikachu's moves is " + pokemonMoves[i].move.name + ".");
+                  }
+
+                  var text3 = "Do you know what " + pokemonName + " evolves from?";
+                  var text4 = "Do you know where " + pokemonName + " is usually found?";
+
+                  var speciesURL = json.species.url;
+                  fetch(speciesURL, {mode:'cors'})
+                    .then(function(response) {
+                      if(response.ok)
+                        return response.json();
+                      else {
+                        return;
+                      }
+                    }).then(function(json) {
+                      try {
+                        text3 = "Wild " + pokemonName + " are found in their natural habitat: " + json.habitat.name + ".";
+                        text4 = pokemonName + " evolves from " + json.evolves_from_species.name + ".";
+
+                        arrayOfText.push(text3);
+                        arrayOfText.push(text4);
+
+                        var numVarieties = json.varieties.length;
+                        var i = Math.floor(Math.random() * numVarieties)-1;
+                        if(i < 0) i = 0;
+
+                        //for(var i = 1; i < numVarieties; i++) {
+                          var varietyURL = json.varieties[i].pokemon.url;
+
+                          fetch(varietyURL, {mode:'cors'})
+                            .then(function(response) {
+                              if(response.ok)
+                                return response.json();
+                              else {
+                                return;
+                              }
+                            }).then(function(json) {
+                              try {
+                                var spriteImage = json.sprites.front_default;
+                                document.getElementById("navBarIcon").src = spriteImage
+                                var text5 = "A form of " + pokemonName + " is " + json.name + ". The sprite at the top of the page should currently reflect this type of " + pokemonName + ".";
+                                arrayOfText.push(text5);
+
+                                var randomIndexOfTextArray = Math.floor(Math.random() * arrayOfText.length);
+
+                                document.getElementById("pikaInfo").style.visibility = "visible";
+                                document.getElementById("pikaInfo").innerText = "Times Pressed: " +  numTimesPressed + "\n " + arrayOfText[randomIndexOfTextArray];
+                                //document.getElementById("pikaInfo").innerText = arrayOfText[randomIndexOfTextArray];
+                              }
+                              catch (error) {
+                              }
+                            });
+
+                        //}
+                      }
+                      catch (error) {
+                      }
+                    });
+
+              } catch (error) {
+              }
+            });
+
+            //For click listener of Button
+        });
+
+     </script>
+
+     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+   </body>
+
+   <footer>
+     <a href=#>Link to GitHub Repo </a>
+   </footer>
+
+</HTML>
